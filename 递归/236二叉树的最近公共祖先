@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    bool find_node(stack<TreeNode*>& s, TreeNode* node, TreeNode* target){
+        s.push(node);
+        if(node==target){
+            return true;
+        }else{
+            if(node->left){
+                if(find_node(s, node->left, target)){
+                    return true;
+                }
+            }
+            if(node->right){
+                if(find_node(s, node->right, target)){
+                    return true;
+                }
+            }
+            s.pop();
+            return false;
+        }
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        stack<TreeNode*> s_p;
+        stack<TreeNode*> s_q;
+        stack<TreeNode*> s;
+        TreeNode* res;
+
+        find_node(s, root, p);
+        while(!s.empty()){
+            s_p.push(s.top());
+            s.pop();
+        }
+        find_node(s, root, q);
+        while(!s.empty()){
+            s_q.push(s.top());
+            s.pop();
+        }
+        while(!s_p.empty()&&!s_q.empty()){
+            auto p_parent = s_p.top();
+            auto q_parent = s_q.top();
+            s_p.pop();
+            s_q.pop();
+            if(p_parent==q_parent){
+                res = p_parent;
+            }else{
+                return res;
+            }
+        }
+        return res;
+    }
+};
